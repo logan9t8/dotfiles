@@ -1,0 +1,38 @@
+{
+	"segments": {
+		"right": [
+			{
+				"function": "powerline.segments.common.net.network_load",
+				"args": {
+					"recv_format": "{value:>8}↓",
+					"sent_format": "{value:>8}↑"
+				},
+				"priority": 40
+			},
+			{
+				"function": "powerline.segments.common.bat.battery",
+				"priority": 30
+			},
+			{
+				"function": "powerline.segments.common.time.date",
+				"name": "time",
+				"args": {
+					"format": "%H:%M:%S",
+					"istime": true
+				}
+			},
+			{
+				"function": "powerline.segments.common.time.date",
+				"name": "date",
+				"args": {
+					"format": "%-d %b"
+				},
+				"priority": 20
+			},
+			{
+				"function": "powerline.segments.common.net.hostname",
+				"priority": 10
+			}
+		]
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"segments": {
+		"right": [
+			{
+				"function": "powerline.segments.common.players.dbus_player",
+				"name": "player",
+				"args": {
+					"format": "{state_symbol} {elapsed}{total}{artist}{title}{album}"
+				},
+				"priority": 50
+			},
+			{
+				"function": "powerline.segments.common.sys.system_load",
+				"priority": 20
+			},
+			{
+				"function": "powerline.segments.common.net.hostname",
+				"priority": 10
+			}
+		]
+	}
+}
