@@ -70,7 +70,7 @@ install-deps() {
     fi
 }
 update-mirrors() {
-    reflector --save /etc/pacman.d/mirrorlist --protocol https --latest 50 --sort rate
+    reflector --save /etc/pacman.d/mirrorlist --protocol https --latest 20 --sort rate --download-timeout 30
     pacman -Syyu
 }
 update-grub() {
@@ -103,7 +103,7 @@ plugins=(
     colored-man-pages
     colorize
     command-not-found
-    copydir
+    copypath
     copyfile
     dircycle
     extract
