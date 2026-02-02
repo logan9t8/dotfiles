@@ -1,9 +1,11 @@
 ##Init
 export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
-export PATH="$PATH:$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
 export EDITOR=vim
 export LESS="-R --mouse --wheel-lines 3"
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 bindkey -e
 
 if [[ $(ps -o args= $PPID | awk "{print $1}") =~ "alacritty|konsole" ]]; then
@@ -11,8 +13,8 @@ if [[ $(ps -o args= $PPID | awk "{print $1}") =~ "alacritty|konsole" ]]; then
 #    ZSH_TMUX_AUTOQUIT=false
 fi
 
-if [[ -f $HOME/.p10k.zsh ]]; then
-    source $HOME/.p10k.zsh && ZSH_THEME=powerlevel10k/powerlevel10k
+if [[ -f /usr/bin/oh-my-posh ]]; then
+    eval "$(oh-my-posh init zsh --config $HOME/.local/share/oh-my-posh/themes/powerlevel10k_rainbow.omp.json)"
 elif [[ -f /usr/share/powerline/bindings/zsh/powerline.zsh ]]; then
     source /usr/share/powerline/bindings/zsh/powerline.zsh
 elif [[ -f $HOME/.oh-my-zsh/oh-my-zsh.sh ]]; then
@@ -25,8 +27,8 @@ fi
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
-alias rg='rg -p'
 alias vim='vim -p'
+alias ncdu='ncdu --color dark'
 alias xx=exit
 alias aurfind="yay -Slq | fzf --multi --preview 'yay -Si {1}' --reverse | xargs -ro yay -S"
 alias pkgfind="pacman -Slq | fzf --multi --preview 'pacman -Si {1}' --reverse | xargs -ro sudo pacman -S"
@@ -39,29 +41,7 @@ pkg()     xdg-open "https://www.archlinux.org/packages/?q=$*"
 pkgcmp()  xdg-open "https://pkgstats.archlinux.de/compare/packages#packages=$(echo $* | tr ' ' ',')"
 
 zudo() { sudo zsh -c $functions[$1] $@ }
-rename-i3ws() { i3-msg "rename workspace '$1' to '$2'" }
 show-pacdiff() { rg --files / -g '*.pac{new,save}' --no-messages }
-load-obsvc() { modprobe v4l2loopback card_label="OBS Virtual Camera" }
-fd() {
-    loc="${2:-$HOME}"; pattern="${1}[^/]*$"
-    rg --hidden --files --no-messages $loc --null | xargs -0 dirname | sort -u | rg --no-line-number --smart-case $pattern
-}
-fdcd() {
-    loc="${2:-$HOME}"; pattern="${1}[^/]*$"
-    cd "$(\rg --hidden --files --no-messages $loc --null | xargs -0 dirname | sort -u | \rg --no-line-number --smart-case $pattern | fzf --tac)"
-}
-ff() {
-    loc="${2:-$HOME}"; pattern="${1}[^/]*$"
-    rg --hidden --files --no-messages $loc | sort |rg --no-line-number --smart-case $pattern
-}
-ffcd() {
-    loc="${2:-$HOME}"; pattern="${1}[^/]*$"
-    cd "$(\rg --hidden --files --no-messages $loc | sort | \rg --no-line-number --smart-case $pattern | fzf --tac | xargs dirname)"
-}
-ffedit() {
-    loc="${2:-$HOME}"; pattern="${1}[^/]*$"
-    $EDITOR "$(\rg --hidden --files --no-messages $loc | sort | \rg --no-line-number --smart-case $pattern | fzf --tac)"
-}
 install-deps() {
     if [[ ! $* ]]; then
         echo "No package provided"
@@ -89,38 +69,37 @@ HISTFILE=$HOME/.histfile
 HISTSIZE=100000
 SAVEHIST=100000
 bindkey \^U backward-kill-line
-autoload -Uz compinit && compinit
-autoload -Uz run-help && unalias run-help && alias help=run-help
-autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo run-help-svk run-help-svn
+autoload -Uz compinit
+if [[ -n $HOME/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 zmodload zsh/terminfo
 setopt aliases autocd beep cdablevars complete_aliases correct extendedglob notify
 
 ##3rd party settings
 plugins=(
-    alias-finder
     autojump
-    catimg
     colored-man-pages
     colorize
     command-not-found
-    copypath
     copyfile
+    copypath
     dircycle
     extract
     fzf
-    git
     #globalias
-    history-substring-search
     jsontools
     per-directory-history
     sudo
     tmux
-    vscode
     zsh-interactive-cd
 )
 
 source $HOME/.oh-my-zsh/oh-my-zsh.sh
 
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 bindkey "$terminfo[kcuu1]" history-substring-search-up
